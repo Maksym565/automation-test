@@ -40,4 +40,20 @@ test.describe("Three test cases for automation test task", () => {
   // test('Search the item', async ({page}) => {
   //
   // })
+  test.describe("Three test cases for automation test task", () => {
+  test("Search the item", async ({ page }) => {
+    await page.goto(process.env.BASE_URL);
+
+    await expect(page.url()).toBe(process.env.BASE_URL);
+
+    await test.step("Open Search form", async () => {
+      await page.locator("//div[@class='search-button']").click();
+    });
+    await test.step("Search the item", async () => {
+      await page.locator("//input[@class='search-input']").type("dior savage ", {delay: 100});
+      });
+    await test.step("Verify items", async () => {
+      await expect(page.locator("//div[@class='search-product-item-text']//div[@class='product-list__name']")).toContainText(['Dior Sauvage', 'Dior Sauvage Eau de Parfum', 'Dior Sauvage Elixir', 'Dior Eau Sauvage', 'Dior Diorshow On Stage', 'Dior Sauvage', 'Dior Eau Sauvage Extreme', 'Dior Fahrenheit', 'Dior Jadore','Dior Eau Sauvage Shaving Foam']);
+    });
+  });
 });
