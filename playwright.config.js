@@ -19,8 +19,8 @@ module.exports = defineConfig({
 
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 0,
-  workers: 1,
+  retries: 1,
+  workers: 3,
   reporter: [['html'],['line'],['allure-playwright']],
   use: {
     headless: false,
@@ -46,16 +46,6 @@ module.exports = defineConfig({
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'mobile-chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'mobile-safari',
-    //   use: { ...devices['iPhone 12'] },
     // },
   ],
 });
