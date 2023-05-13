@@ -9,10 +9,10 @@ test.describe("Three test cases for automation test task", () => {
 
     expect(page.url()).toBe(process.env.BASE_URL);
     await test.step("Open category and change filters", async () => {
-      await page.locator('a[href="/ua/categorys/20280/"]').click();
-      await page.locator('[id="input-checkbox-2243-86929"]').click();
-      await page.locator('[id="input-checkbox-2245-86931"]').click();
-      await page.locator('[id="input-checkbox-2257-24219"]').click();
+      await page.locator("//a[contains(@href,'categorys') and normalize-space(text())='Чоловікам']").click();
+      await page.locator("//li[contains(@id,'input-checkbox') and contains(@class, 'popular')]//a[normalize-space(text())='Old Spice']").click();
+      await page.locator("//li[contains(@id,'input-checkbox')]//span[normalize-space(text())='Засоби після гоління']").click();
+      await page.locator("//li[contains(@id,'input-checkbox')]//span[normalize-space(text())='Зволоження']").click();
     });
 
     await page.waitForLoadState("networkidle");
@@ -38,7 +38,7 @@ test.describe("Three test cases for automation test task", () => {
     await expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open category and add 1st item to the cart", async () => {
-      await page.locator('a[href="/ua/categorys/2419/"]').click();
+      await page.locator("//a[contains(@href,'categorys') and normalize-space(text())='Макіяж']").click();
       await page.locator('a[href^="/ua/product/"]').first().click();
       await page
         .locator("(//div[@class='button buy'][contains(text(),'Купити')])[1]")
