@@ -1,29 +1,38 @@
 const { test, expect } = require("@playwright/test");
+const { locator } = require("../src/locators");
+import { MainPage } from "../src/basePage";
 require("dotenv").config();
 
-test.describe("Three test cases for automation test task", () => {
+test.use({ userAgent: "GoogleBot" });
+const baseTimeout = 2500;
+
+test.describe("Test cases for automation test task", () => {
   test("Verify if the price filter working correctly for the following marketplaces", async ({
     page,
   }) => {
     await page.goto(process.env.BASE_URL);
 
     expect(page.url()).toBe(process.env.BASE_URL);
+
     await test.step("Open category and change filters", async () => {
-      await page.locator("//a[contains(@href,'categorys') and normalize-space(text())='Чоловікам']").click();
-      await page.locator("//li[contains(@id,'input-checkbox') and contains(@class, 'popular')]//a[normalize-space(text())='Old Spice']").click();
-      await page.locator("//li[contains(@id,'input-checkbox')]//span[normalize-space(text())='Засоби після гоління']").click();
-      await page.locator("//li[contains(@id,'input-checkbox')]//span[normalize-space(text())='Зволоження']").click();
+      await page.locator(locator.category.man).click();
+      await page.locator(locator.filters.oldSpiceFilter).click();
+      await page.locator(locator.filters.shavingFilter).click();
+      await page.locator(locator.filters.hydrationFilter).click();
     });
 
     await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(baseTimeout);
 
     await test.step("Check if products are correctly filtered by price", async () => {
-      let priceFrom = await page.locator('[id="price-from"]').inputValue();
-      let priceTo = await page.locator('[id="price-to"]').inputValue();
+      let priceFrom = await page
+        .locator(locator.filters.priceFromFilter)
+        .inputValue();
+      let priceTo = await page
+        .locator(locator.filters.priceToFilter)
+        .inputValue();
 
-      let prices = page.locator(
-        "//div[@class='catalog-products']//span[contains(@class, 'simple-slider-list__price') and not(contains(@class, 'simple-slider-list__price_old'))]/span[@class='price_item']"
-      );
+      let prices = page.locator(locator.mainPage.itemPrices);
       const pricesCount = await prices.count();
       for (let index = 0; index < pricesCount; index++) {
         const price = await prices.nth(index).innerText();
@@ -32,45 +41,42 @@ test.describe("Three test cases for automation test task", () => {
       }
     });
   });
+
   test("Add items to the basket", async ({ page }) => {
     await page.goto(process.env.BASE_URL);
 
     await expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open category and add 1st item to the cart", async () => {
-      await page.locator("//a[contains(@href,'categorys') and normalize-space(text())='Макіяж']").click();
-      await page.locator('a[href^="/ua/product/"]').first().click();
-      await page
-        .locator("(//div[@class='button buy'][contains(text(),'Купити')])[1]")
-        .click();
-      await page.locator('[class="popup-close close-icon"]').last().click();
+      await page.pause();
+      await page.locator(locator.category.makeUp).click();
+      await page.locator(locator.mainPage.items).first().click();
+
+      await page.waitForTimeout(baseTimeout);
+
+      await page.locator(locator.checkout.buyToBasketBtn).click();
+      await page.locator(locator.checkout.basketCloseBtn).last().click();
     });
 
-    await page.waitForLoadState("domcontentloaded");
-
     await test.step("Open 2nd category and add 1n item to the cart", async () => {
-      await page
-        .locator(
-          "(//a[@class='menu-list__link'][contains(text(),'Парфумерія')])[1]"
-        )
-        .click();
+      await page.locator(locator.category.perfumery).click();
+      await page.waitForEvent("domcontentloaded");
+      await page.locator(locator.mainPage.items).first().click();
 
-      await page.waitForEvent("requestfinished");
-      await page.locator('a[href^="/ua/product/"]').first().click();
-      await page
-        .locator("(//div[@class='button buy'][contains(text(),'Купити')])[1]")
-        .click();
+      await page.waitForTimeout(baseTimeout);
+
+      await page.locator(locator.checkout.buyToBasketBtn).click();
     });
 
     await test.step("Validation price of items from main cart price", async () => {
       let firstItem = (
-        await page.locator('[class="product__price"]').first().textContent()
+        await page.locator(locator.checkout.cartItemPrice).first().textContent()
       ).trim();
       let secondItem = (
-        await page.locator('[class="product__price"]').last().textContent()
+        await page.locator(locator.checkout.cartItemPrice).last().textContent()
       ).trim();
       let mainPrice = (
-        await page.locator('[class="total"] > span').last().textContent()
+        await page.locator(locator.checkout.mainCartPrice).last().textContent()
       ).trim();
 
       let firstValue = Number(firstItem.slice(0, firstItem.indexOf(" ")));
@@ -82,23 +88,23 @@ test.describe("Three test cases for automation test task", () => {
 
     await test.step("Validation items content", async () => {
       await expect(
-        page.locator('[class="product-list_product-item"]').first()
+        page.locator(locator.checkout.cartItemContainer).first()
       ).toBeVisible();
       await expect(
-        page.locator('[class="product-list_product-item"]').first()
+        page.locator(locator.checkout.cartItemContainer).first()
       ).not.toBeEmpty();
       await expect(
-        page.locator('[class="product-list_product-item"]').first()
+        page.locator(locator.checkout.cartItemContainer).first()
       ).toBeEnabled();
 
       await expect(
-        page.locator('[class="product-list_product-item"]').last()
+        page.locator(locator.checkout.cartItemContainer).last()
       ).toBeVisible();
       await expect(
-        page.locator('[class="product-list_product-item"]').last()
+        page.locator(locator.checkout.cartItemContainer).last()
       ).not.toBeEmpty();
       await expect(
-        page.locator('[class="product-list_product-item"]').last()
+        page.locator(locator.checkout.cartItemContainer).last()
       ).toBeEnabled();
     });
   });
@@ -109,19 +115,15 @@ test.describe("Three test cases for automation test task", () => {
     await expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open Search form", async () => {
-      await page.locator("//div[@class='search-button']").click();
+      await page.locator(locator.mainPage.searchForm).click();
     });
     await test.step("Search the item", async () => {
       await page
-        .locator("//input[@class='search-input']")
+        .locator(locator.mainPage.searchField)
         .type("dior savage ", { delay: 100 });
     });
     await test.step("Verify items", async () => {
-      await expect(
-        page.locator(
-          "//div[@class='search-product-item-text']//div[@class='product-list__name']"
-        )
-      ).toContainText([
+      await expect(page.locator(locator.mainPage.searchResult)).toContainText([
         "Dior Sauvage",
         "Dior Sauvage Eau de Parfum",
         "Dior Sauvage Elixir",
@@ -133,6 +135,20 @@ test.describe("Three test cases for automation test task", () => {
         "Dior Jadore",
         "Dior Eau Sauvage Shaving Foam",
       ]);
+    });
+  });
+
+  test("Login with invalid user data", async ({ page }) => {
+    await page.goto(process.env.BASE_URL);
+
+    await expect(page.url()).toBe(process.env.BASE_URL);
+
+    await test.step("Navigate and fill user login data", async () => {
+      const mainPge = new MainPage(page);
+
+      await mainPge.userLogin("testuser@example.com", "Password123!@#");
+
+      await expect(page.locator(locator.mainPage.favouriteIcon)).toBeVisible();
     });
   });
 });

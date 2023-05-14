@@ -12,7 +12,7 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 195 * 1000,
+  timeout: 50 * 1000,
   expect: {
     timeout: 5000
   },
@@ -23,7 +23,7 @@ module.exports = defineConfig({
   workers: 3,
   reporter: [['html'],['line'],['allure-playwright']],
   use: {
-    headless: false,
+    headless: true,
     actionTimeout: 0,
     trace: 'retain-on-failure',
     viewport: { width: 1280, height: 720 },
@@ -38,14 +38,14 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    //
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
 });
