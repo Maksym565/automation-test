@@ -1,5 +1,6 @@
 const { test, expect } = require("@playwright/test");
 const { locator } = require("../src/locators");
+const { testData, expectedData } = require("../src/testData");
 import { MainPage } from "../src/basePage";
 require("dotenv").config();
 
@@ -10,15 +11,16 @@ test.describe("Test cases for automation test task", () => {
   test("Verify if the price filter working correctly for the following marketplaces", async ({
     page,
   }) => {
+    const mainPge = new MainPage(page);
     await page.goto(process.env.BASE_URL);
 
     expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open category and change filters", async () => {
-      await page.locator(locator.category.man).click();
-      await page.locator(locator.filters.oldSpiceFilter).click();
-      await page.locator(locator.filters.shavingFilter).click();
-      await page.locator(locator.filters.hydrationFilter).click();
+      await mainPge.selectCategory(testData.category.forMan);
+      await mainPge.selectFilter(testData.filters.brands.oldSpice, true);
+      await mainPge.selectFilter(testData.filters.aftershaveProducts);
+      await mainPge.selectFilter(testData.filters.hydration);
     });
 
     await page.waitForLoadState("networkidle");
@@ -43,13 +45,13 @@ test.describe("Test cases for automation test task", () => {
   });
 
   test("Add items to the basket", async ({ page }) => {
+    const mainPge = new MainPage(page);
     await page.goto(process.env.BASE_URL);
 
     await expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open category and add 1st item to the cart", async () => {
-      await page.pause();
-      await page.locator(locator.category.makeUp).click();
+      await mainPge.selectCategory(testData.category.makeup);
       await page.locator(locator.mainPage.items).first().click();
 
       await page.waitForTimeout(baseTimeout);
@@ -59,7 +61,7 @@ test.describe("Test cases for automation test task", () => {
     });
 
     await test.step("Open 2nd category and add 1n item to the cart", async () => {
-      await page.locator(locator.category.perfumery).click();
+      await mainPge.selectCategory(testData.category.perfume);
       await page.waitForEvent("domcontentloaded");
       await page.locator(locator.mainPage.items).first().click();
 
@@ -120,21 +122,10 @@ test.describe("Test cases for automation test task", () => {
     await test.step("Search the item", async () => {
       await page
         .locator(locator.mainPage.searchField)
-        .type("dior savage ", { delay: 100 });
+        .type(testData.search.diorSavage, { delay: 100 });
     });
     await test.step("Verify items", async () => {
-      await expect(page.locator(locator.mainPage.searchResult)).toContainText([
-        "Dior Sauvage",
-        "Dior Sauvage Eau de Parfum",
-        "Dior Sauvage Elixir",
-        "Dior Eau Sauvage",
-        "Dior Diorshow On Stage",
-        "Dior Sauvage",
-        "Dior Eau Sauvage Extreme",
-        "Dior Fahrenheit",
-        "Dior Jadore",
-        "Dior Eau Sauvage Shaving Foam",
-      ]);
+      await expect(page.locator(locator.mainPage.searchResult)).toContainText(expectedData.diorSearch);
     });
   });
 
@@ -146,7 +137,7 @@ test.describe("Test cases for automation test task", () => {
     await test.step("Navigate and fill user login data", async () => {
       const mainPge = new MainPage(page);
 
-      await mainPge.userLogin("testuser@example.com", "Password123!@#");
+      await mainPge.userLogin(testData.login.email, testData.login.password);
 
       await expect(page.locator(locator.mainPage.favouriteIcon)).toBeVisible();
     });
