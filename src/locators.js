@@ -10,7 +10,8 @@ const locator = {
     profileIcon: '[class="header-office"]',
     favouriteIcon: '[href="/ua/user/favourite/"]',
   },
-  category: "//a[contains(@href,'categorys') and normalize-space(text())='@Value@']",
+  category:
+    "//a[contains(@href,'categorys') and normalize-space(text())='@Value@']",
   filters: {
     popularFilter:
       "//li[contains(@id,'input-checkbox') and contains(@class, 'popular')]//a[normalize-space(text())='@Value@']",

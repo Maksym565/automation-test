@@ -125,7 +125,9 @@ test.describe("Test cases for automation test task", () => {
         .type(testData.search.diorSavage, { delay: 100 });
     });
     await test.step("Verify items", async () => {
-      await expect(page.locator(locator.mainPage.searchResult)).toContainText(expectedData.diorSearch);
+      await expect(page.locator(locator.mainPage.searchResult)).toContainText(
+        expectedData.diorSearch
+      );
     });
   });
 
