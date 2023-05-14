@@ -20,4 +20,21 @@ exports.MainPage = class MainPage {
       await this.page.waitForEvent("requestfinished");
     });
   }
+
+  async selectCategory(category) {
+    await test.step(`Select category: '${category}'`, async () => {
+      await this.page.locator(locator.category.replace('@Value@', category)).click();
+    });
+  }
+  
+  async selectFilter(filter, popular = false) {
+    await test.step(`Select filter: '${filter}'`, async () => {
+      if(popular){
+        await this.page.locator(locator.filters.popularFilter.replace('@Value@', filter)).click();
+      }
+      else{
+        await this.page.locator(locator.filters.filter.replace('@Value@', filter)).click();
+      }
+    });
+  }
 };
