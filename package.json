@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "test": "npx playwright test",
-    "report.generate": "npx allure generate --clean allure-results && npx allure open allure-report",
+    "report": "npx allure generate --clean allure-results && npx allure open allure-report",
     "format": "npx prettier --write tests && npx prettier --write src"
   },
   "repository": {
