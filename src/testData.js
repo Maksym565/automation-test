@@ -1,12 +1,12 @@
 const testData = {
   category: {
-    forMan: "Чоловікам",
-    makeup: "Макіяж",
-    perfume: "Парфумерія",
+    forMan: "Мужчинам",
+    makeup: "Макияж",
+    perfume: "Парфюмерия",
   },
   filters: {
-    aftershaveProducts: "Засоби після гоління",
-    hydration: "Зволоження",
+    aftershaveProducts: "Средства после бритья",
+    hydration: "Увлажнение",
     brands: {
       oldSpice: "Old Spice",
     },
@@ -16,22 +16,22 @@ const testData = {
     password: "Password123!@#",
   },
   search: {
-    diorSavage: "dior savage ",
+    diorSavage: "Dior Sauvage Eau de Parfum",
   },
 };
 
 const expectedData = {
   diorSearch: [
-    "Dior Sauvage",
     "Dior Sauvage Eau de Parfum",
-    "Dior Sauvage Elixir",
-    "Dior Eau Sauvage",
-    "Dior Diorshow On Stage",
-    "Dior Sauvage",
-    "Dior Eau Sauvage Extreme",
-    "Dior Fahrenheit",
-    "Dior Jadore",
-    "Dior Eau Sauvage Shaving Foam",
+    "Dior Sauvage Eau de Parfum Refill",
+    "Dior Sauvage Eau de Parfum Gift Set",
+    "Dior Sauvage Face and Beard Moisturizer",
+    "Dior Sauvage After-Shave Balm",
+    "Dior Sauvage Eau de Parfum",
+    "Dior Sauvage Eau de Parfum",
+    "Dior Sauvage Eau de Parfum Limited Edition",
+    "Dior Sauvage Eau de Parfum Shower Gel",
+    "Dior Sauvage Face Cleanser and Mask",
   ],
 };
 

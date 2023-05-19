@@ -15,7 +15,7 @@ exports.MainPage = class MainPage {
       await this.page
         .locator(locator.login.passwordField)
         .type(password, { delay: 100 });
-      await this.page.locator(locator.login.btn).first().click();
+      await this.page.locator(locator.login.btn).click();
 
       await this.page.waitForEvent("requestfinished");
     });
@@ -25,6 +25,7 @@ exports.MainPage = class MainPage {
     await test.step(`Select category: '${category}'`, async () => {
       await this.page
         .locator(locator.category.replace("@Value@", category))
+        .first()
         .click();
     });
   }

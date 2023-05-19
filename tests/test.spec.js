@@ -2,19 +2,23 @@ const { test, expect } = require("@playwright/test");
 const { locator } = require("../src/locators");
 const { testData, expectedData } = require("../src/testData");
 import { MainPage } from "../src/basePage";
+import { TestStep } from "../src/models";
 require("dotenv").config();
 
 test.use({ userAgent: "GoogleBot" });
 const baseTimeout = 2500;
 
 test.describe("Test cases for automation test task", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(process.env.BASE_URL);
+
+    expect(page.url()).toBe(process.env.BASE_URL);
+  });
+
   test("Verify if the price filter working correctly for the following marketplaces", async ({
     page,
   }) => {
     const mainPge = new MainPage(page);
-    await page.goto(process.env.BASE_URL);
-
-    expect(page.url()).toBe(process.env.BASE_URL);
 
     await test.step("Open category and change filters", async () => {
       await mainPge.selectCategory(testData.category.forMan);
@@ -48,28 +52,26 @@ test.describe("Test cases for automation test task", () => {
 
   test("Add items to the basket", async ({ page }) => {
     const mainPge = new MainPage(page);
-    await page.goto(process.env.BASE_URL);
-
-    await expect(page.url()).toBe(process.env.BASE_URL);
+    const testStep = new TestStep(page);
 
     await test.step("Open category and add 1st item to the cart", async () => {
       await mainPge.selectCategory(testData.category.makeup);
-      await page.locator(locator.mainPage.items).first().click();
+      await testStep.firstItemClick();
 
       await page.waitForTimeout(baseTimeout);
 
-      await page.locator(locator.checkout.buyToBasketBtn).click();
-      await page.locator(locator.checkout.basketCloseBtn).last().click();
+      await testStep.addItemToBasketBtn();
+      await page.locator(locator.checkout.basketCloseBtn).click();
     });
 
     await test.step("Open 2nd category and add 1n item to the cart", async () => {
       await mainPge.selectCategory(testData.category.perfume);
       await page.waitForEvent("domcontentloaded");
-      await page.locator(locator.mainPage.items).first().click();
+      await testStep.firstItemClick();
 
       await page.waitForTimeout(baseTimeout);
 
-      await page.locator(locator.checkout.buyToBasketBtn).click();
+      await testStep.addItemToBasketBtn();
     });
 
     await test.step("Validation price of items from main cart price", async () => {
@@ -90,36 +92,12 @@ test.describe("Test cases for automation test task", () => {
       await expect(firstValue + secondValue).toEqual(mainValue);
     });
 
-    await test.step("Validation items content", async () => {
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).first()
-      ).toBeVisible();
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).first()
-      ).not.toBeEmpty();
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).first()
-      ).toBeEnabled();
-
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).last()
-      ).toBeVisible();
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).last()
-      ).not.toBeEmpty();
-      await expect(
-        page.locator(locator.checkout.cartItemContainer).last()
-      ).toBeEnabled();
-    });
+    await testStep.validationItemsContent();
   });
 
   test("Search the item", async ({ page }) => {
-    await page.goto(process.env.BASE_URL);
-
-    await expect(page.url()).toBe(process.env.BASE_URL);
-
     await test.step("Open Search form", async () => {
-      await page.locator(locator.mainPage.searchForm).click();
+      await page.locator(locator.mainPage.searchForm).first().click();
     });
     await test.step("Search the item", async () => {
       await page
@@ -133,12 +111,9 @@ test.describe("Test cases for automation test task", () => {
     });
   });
 
+  // FAILED TEST
   test("Login with invalid user data", async ({ page }) => {
-    await page.goto(process.env.BASE_URL);
-
-    await expect(page.url()).toBe(process.env.BASE_URL);
-
-    await test.step("Navigate and fill user login data", async () => {
+    await test.step("Navigate and fill user login data and validate that user is login", async () => {
       const mainPge = new MainPage(page);
 
       await mainPge.userLogin(testData.login.email, testData.login.password);

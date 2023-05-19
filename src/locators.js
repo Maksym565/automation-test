@@ -2,12 +2,11 @@ const locator = {
   mainPage: {
     itemPrices:
       "//div[@class='catalog-products']//span[contains(@class, 'simple-slider-list__price') and not(contains(@class, 'simple-slider-list__price_old'))]/span[@class='price_item']",
-    items: 'a[href^="/ua/product/"]',
-    searchForm: "//div[@class='search-button']",
-    searchField: "//input[@class='search-input']",
-    searchResult:
-      "//div[@class='search-product-item-text']//div[@class='product-list__name']",
-    profileIcon: '[class="header-office"]',
+    items: ".simple-slider-list__name",
+    searchForm: ".search-button",
+    searchField: ".search-input",
+    searchResult: ".search-product-item-text .product-list__name",
+    profileIcon: ".header-office",
     favouriteIcon: '[href="/ua/user/favourite/"]',
   },
   category:
@@ -17,21 +16,20 @@ const locator = {
       "//li[contains(@id,'input-checkbox') and contains(@class, 'popular')]//a[normalize-space(text())='@Value@']",
     filter:
       "//li[contains(@id,'input-checkbox')]//span[normalize-space(text())='@Value@']",
-    priceFromFilter: '[id="price-from"]',
-    priceToFilter: '[id="price-to"]',
+    priceFromFilter: "#price-from",
+    priceToFilter: "#price-to",
   },
   login: {
     emailField: "#login",
     passwordField: "#pw",
-    btn: '[class="input-row"] [type="submit"]',
+    btn: "form[id='form-auth'] button[type='submit']",
   },
   checkout: {
-    buyToBasketBtn:
-      "(//div[@class='button buy'][contains(text(),'Купити')])[1]",
-    basketCloseBtn: '[class="popup-close close-icon"]',
-    cartItemPrice: '[class="product__price"]',
-    cartItemContainer: '[class="product-list_product-item"]',
-    mainCartPrice: '[class="total"] > span',
+    buyToBasketBtn: ".product-item__button > div",
+    basketCloseBtn: ".popup__window > .popup-close",
+    cartItemPrice: ".product__price",
+    cartItemContainer: ".product-list_product-item",
+    mainCartPrice: ".total > span",
   },
 };
 
